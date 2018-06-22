@@ -20,12 +20,36 @@
 #include <sound/soc.h>
 #include <sound/jack.h>
 #include <sound/sof.h>
+#include "sof-priv.h"
+
+static int sof_nocodec_codec_fixup(struct snd_soc_pcm_runtime *rtd,
+				   struct snd_pcm_hw_params *params)
+{
+	// TODO: read this from topology
+	return 0;
+}
+
+static int nocodec_rtd_init(struct snd_soc_pcm_runtime *rtd)
+{
+	snd_soc_set_dmi_name(rtd->card, NULL);
+
+	return 0;
+}
+
+static struct snd_soc_card sof_nocodec_card = {
+	.name = "sof-nocodec",
+};
 
 int sof_nocodec_setup(struct device *dev,
 		      struct snd_sof_pdata *sof_pdata,
 		      struct snd_soc_acpi_mach *mach,
-		      const struct sof_dev_desc *desc)
+		      const struct sof_dev_desc *desc,
+		      struct snd_sof_dsp_ops *ops)
 {
+	struct snd_soc_dai_link *links;
+	char name[32];
+	int i;
+
 	if (!mach)
 		return -EINVAL;
 
@@ -35,54 +59,45 @@ int sof_nocodec_setup(struct device *dev,
 	mach->sof_fw_filename = desc->nocodec_fw_filename;
 	mach->sof_tplg_filename = desc->nocodec_tplg_filename;
 
+	/* create dummy BE dai_links */
+	links = devm_kzalloc(dev, sizeof(struct snd_soc_dai_link) *
+			     ops->dai_drv->num_drv, GFP_KERNEL);
+	if (!links)
+		return -ENOMEM;
+
+	for (i = 0; i < ops->dai_drv->num_drv; i++) {
+		snprintf(name, 32, "NoCodec-%d", i);
+		links[i].name = kmemdup(name, sizeof(name), GFP_KERNEL);
+		if (!links[i].name)
+			goto no_mem;
+
+		links[i].id = i;
+		links[i].init = nocodec_rtd_init;
+		links[i].no_pcm = 1;
+		links[i].cpu_dai_name = ops->dai_drv->drv[i].name;
+		links[i].platform_name = "sof-audio";
+		links[i].codec_dai_name = "snd-soc-dummy-dai";
+		links[i].codec_name = "snd-soc-dummy";
+		links[i].be_hw_params_fixup = sof_nocodec_codec_fixup;
+		links[i].dpcm_playback = 1;
+		links[i].dpcm_capture = 1;
+	}
+
+	sof_nocodec_card.dai_link = links;
+	sof_nocodec_card.num_links = ops->dai_drv->num_drv;
+
 	return 0;
+no_mem:
+	/* free allocated memories and return error */
+	for (; i > 0; i--)
+		kfree(links[i - 1].name);
+
+	kfree(links);
+
+	return -ENOMEM;
+
 }
 EXPORT_SYMBOL(sof_nocodec_setup);
-
-static int sof_nocodec_codec_fixup(struct snd_soc_pcm_runtime *rtd,
-				   struct snd_pcm_hw_params *params)
-{
-	// TODO: read this from topology
-	return 0;
-}
-
-static struct snd_soc_ops sof_nocodec_ops = {};
-
-static int nocodec_rtd_init(struct snd_soc_pcm_runtime *rtd)
-{
-	snd_soc_set_dmi_name(rtd->card, NULL);
-
-	return 0;
-}
-
-/* we just set some BEs - FE provided by topology */
-static struct snd_soc_dai_link sof_nocodec_dais[] = {
-	/* Back End DAI links */
-	{
-		/* SSP0 - Codec */
-		.name = "NoCodec",
-		.id = 0,
-		.init = nocodec_rtd_init,
-		.cpu_dai_name = "sof-nocodec-dai",
-		.platform_name = "sof-audio",
-		.no_pcm = 1,
-		.codec_dai_name = "snd-soc-dummy-dai",
-		.codec_name = "snd-soc-dummy",
-		.ops = &sof_nocodec_ops,
-		.dai_fmt = SND_SOC_DAIFMT_DSP_B | SND_SOC_DAIFMT_NB_NF |
-			SND_SOC_DAIFMT_CBS_CFS,
-		.ignore_suspend = 1,
-		.be_hw_params_fixup = sof_nocodec_codec_fixup,
-		.dpcm_playback = 1,
-		.dpcm_capture = 1,
-	},
-};
-
-static struct snd_soc_card sof_nocodec_card = {
-	.name = "sof-nocodec",
-	.dai_link = sof_nocodec_dais,
-	.num_links = ARRAY_SIZE(sof_nocodec_dais),
-};
 
 static int sof_nocodec_probe(struct platform_device *pdev)
 {
