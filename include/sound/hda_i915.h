@@ -10,6 +10,7 @@
 
 /* virtual idx for controller */
 #define HDA_CODEC_IDX_CONTROLLER	HDA_MAX_CODECS
+#define HDA_CODEC_RT		    (HDA_CODEC_IDX_CONTROLLER + 1)
 #ifdef CONFIG_SND_HDA_I915
 int snd_hdac_set_codec_wakeup(struct hdac_bus *bus, bool enable);
 void snd_hdac_display_power(struct hdac_bus *bus, unsigned int idx,

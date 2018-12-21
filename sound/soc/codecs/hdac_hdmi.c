@@ -1374,11 +1374,39 @@ static void hdac_hdmi_skl_enable_dp12(struct hdac_device *hdev)
 
 }
 
+static int hdac_hdmi_pcm_trigger(struct snd_pcm_substream *substream, int cmd,
+				 struct snd_soc_dai *dai)
+{
+	struct hdac_hdmi_priv *hdmi = snd_soc_dai_get_drvdata(dai);
+	struct hdac_device *hdev = hdmi->hdev;
+	int ret = 0;
+
+	switch (cmd) {
+	case SNDRV_PCM_TRIGGER_START:
+	case SNDRV_PCM_TRIGGER_RESUME:
+	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
+		snd_hdac_display_power(hdev->bus, hdev->addr + HDA_CODEC_RT,
+				       true);
+		break;
+	case SNDRV_PCM_TRIGGER_STOP:
+	case SNDRV_PCM_TRIGGER_SUSPEND:
+	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
+		snd_hdac_display_power(hdev->bus, hdev->addr + HDA_CODEC_RT,
+				       false);
+		break;
+	default:
+		ret = -EINVAL;
+	}
+
+	return ret;
+}
+
 static const struct snd_soc_dai_ops hdmi_dai_ops = {
 	.startup = hdac_hdmi_pcm_open,
 	.shutdown = hdac_hdmi_pcm_close,
 	.hw_params = hdac_hdmi_set_hw_params,
 	.set_tdm_slot = hdac_hdmi_set_tdm_slot,
+	.trigger = hdac_hdmi_pcm_trigger,
 };
 
 /*
@@ -1852,7 +1880,11 @@ static int hdmi_codec_prepare(struct device *dev)
 {
 	struct hdac_device *hdev = dev_to_hdac_dev(dev);
 
-	pm_runtime_get_sync(&hdev->dev);
+	/*
+	 * Let's power i915 up for codec settings and after that
+	 * let's power it off.
+	 */
+	snd_hdac_display_power(hdev->bus, hdev->addr, true);
 
 	/*
 	 * Power down afg.
@@ -1863,6 +1895,7 @@ static int hdmi_codec_prepare(struct device *dev)
 	 */
 	snd_hdac_codec_read(hdev, hdev->afg, 0,	AC_VERB_SET_POWER_STATE,
 							AC_PWRST_D3);
+	snd_hdac_display_power(hdev->bus, hdev->addr, false);
 
 	return 0;
 }
@@ -1872,6 +1905,7 @@ static void hdmi_codec_complete(struct device *dev)
 	struct hdac_device *hdev = dev_to_hdac_dev(dev);
 	struct hdac_hdmi_priv *hdmi = hdev_to_hdmi_priv(hdev);
 
+	snd_hdac_display_power(hdev->bus, hdev->addr, true);
 	/* Power up afg */
 	snd_hdac_codec_read(hdev, hdev->afg, 0,	AC_VERB_SET_POWER_STATE,
 							AC_PWRST_D0);
@@ -1887,7 +1921,7 @@ static void hdmi_codec_complete(struct device *dev)
 	 */
 	hdac_hdmi_present_sense_all_pins(hdev, hdmi, false);
 
-	pm_runtime_put_sync(&hdev->dev);
+	snd_hdac_display_power(hdev->bus, hdev->addr, false);
 }
 #else
 #define hdmi_codec_prepare NULL
