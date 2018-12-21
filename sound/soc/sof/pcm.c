@@ -316,6 +316,7 @@ static int sof_pcm_trigger(struct snd_pcm_substream *substream, int cmd)
 	ret = sof_ipc_tx_message(sdev->ipc, stream.hdr.cmd, &stream,
 				 sizeof(stream), &reply, sizeof(reply));
 
+	/* fixme: TODO: need free i915 power if trigger failed */
 	return ret;
 }
 
