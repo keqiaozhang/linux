@@ -498,6 +498,8 @@ int sof_hda_bus_init(struct hdac_bus *bus, struct device *dev,
  */
 int hda_codec_probe_bus(struct snd_sof_dev *sdev);
 int hda_codec_i915_init(struct snd_sof_dev *sdev);
+void hda_codec_i915_get(struct snd_sof_dev *sdev);
+void hda_codec_i915_put(struct snd_sof_dev *sdev);
 #endif
 
 /*

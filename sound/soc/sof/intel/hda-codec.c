@@ -112,6 +112,24 @@ int hda_codec_probe_bus(struct snd_sof_dev *sdev)
 }
 EXPORT_SYMBOL(hda_codec_probe_bus);
 
+void hda_codec_i915_get(struct snd_sof_dev *sdev)
+{
+	struct hdac_bus *bus = sof_to_bus(sdev);
+
+	dev_dbg(bus->dev, "Turning i915 HDAC power on\n");
+	snd_hdac_display_power(bus, HDA_CODEC_IDX_CONTROLLER, true);
+}
+EXPORT_SYMBOL(hda_codec_i915_get);
+
+void hda_codec_i915_put(struct snd_sof_dev *sdev)
+{
+	struct hdac_bus *bus = sof_to_bus(sdev);
+
+	dev_dbg(bus->dev, "Turning i915 HDAC power off\n");
+	snd_hdac_display_power(bus, HDA_CODEC_IDX_CONTROLLER, false);
+}
+EXPORT_SYMBOL(hda_codec_i915_put);
+
 int hda_codec_i915_init(struct snd_sof_dev *sdev)
 {
 	struct hdac_bus *bus = sof_to_bus(sdev);
@@ -122,9 +140,7 @@ int hda_codec_i915_init(struct snd_sof_dev *sdev)
 	if (ret < 0)
 		return ret;
 
-	ret = snd_hdac_display_power(bus, true);
-	if (ret < 0)
-		dev_err(bus->dev, "i915 HDAC power on failed %d\n", ret);
+	hda_codec_i915_get(sdev);
 
 	return ret;
 }
