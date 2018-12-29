@@ -392,7 +392,7 @@ static int hda_init_caps(struct snd_sof_dev *sdev)
 	if (ret < 0) {
 		dev_err(bus->dev, "Init chip failed with ret: %d\n", ret);
 		if (IS_ENABLED(CONFIG_SND_SOC_HDAC_HDMI))
-			snd_hdac_display_power(bus, false);
+			hda_codec_i915_put(sdev);
 		return ret;
 	}
 
@@ -404,11 +404,7 @@ static int hda_init_caps(struct snd_sof_dev *sdev)
 	hda_codec_probe_bus(sdev);
 
 	if (IS_ENABLED(CONFIG_SND_SOC_HDAC_HDMI)) {
-		ret = snd_hdac_display_power(bus, false);
-		if (ret < 0) {
-			dev_err(bus->dev, "Cannot turn off display power on i915\n");
-			return ret;
-		}
+		hda_codec_i915_put(sdev);
 	}
 
 	/*

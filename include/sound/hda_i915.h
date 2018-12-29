@@ -6,10 +6,14 @@
 #define __SOUND_HDA_I915_H
 
 #include <drm/i915_component.h>
+#include <sound/hdaudio.h>
 
+/* virtual idx for controller */
+#define HDA_CODEC_IDX_CONTROLLER	HDA_MAX_CODECS
 #ifdef CONFIG_SND_HDA_I915
 int snd_hdac_set_codec_wakeup(struct hdac_bus *bus, bool enable);
-int snd_hdac_display_power(struct hdac_bus *bus, bool enable);
+int snd_hdac_display_power(struct hdac_bus *bus, unsigned int idx,
+			   bool enable);
 void snd_hdac_i915_set_bclk(struct hdac_bus *bus);
 int snd_hdac_sync_audio_rate(struct hdac_device *codec, hda_nid_t nid,
 			     int dev_id, int rate);
@@ -23,7 +27,8 @@ static inline int snd_hdac_set_codec_wakeup(struct hdac_bus *bus, bool enable)
 {
 	return 0;
 }
-static inline int snd_hdac_display_power(struct hdac_bus *bus, bool enable)
+static inline int snd_hdac_display_power(struct hdac_bus *bus,
+					 unsigned int idx, bool enable)
 {
 	return 0;
 }
