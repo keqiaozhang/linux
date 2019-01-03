@@ -74,14 +74,21 @@ EXPORT_SYMBOL_GPL(snd_hdac_set_codec_wakeup);
 void snd_hdac_display_power(struct hdac_bus *bus, unsigned int idx, bool enable)
 {
 	struct i915_audio_component *acomp = bus->audio_component;
+	static int cnt = 0;
 
 	dev_dbg(bus->dev, "display power %s\n",
 		enable ? "enable" : "disable");
 
-	if (enable)
+	if (enable) {
+		cnt++;
 		set_bit(idx, &bus->display_power_status);
-	else
+	} else {
+		cnt--;
 		clear_bit(idx, &bus->display_power_status);
+	}
+
+	if (cnt < 0)
+		dev_err(bus->dev, "in %s %d ylb, ylb_cnt error\n", __func__, __LINE__);
 	if (!acomp || !acomp->ops)
 		return;
 
