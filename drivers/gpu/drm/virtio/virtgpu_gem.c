@@ -72,7 +72,7 @@ int virtio_gpu_gem_create(struct drm_file *file,
 	*obj_p = &obj->gem_base;
 
 	/* drop reference from allocate - handle holds it now */
-	drm_gem_object_unreference_unlocked(&obj->gem_base);
+	drm_gem_object_put_unlocked(&obj->gem_base);
 
 	*handle_p = handle;
 	return 0;
@@ -130,7 +130,7 @@ int virtio_gpu_mode_dumb_mmap(struct drm_file *file_priv,
 		return -ENOENT;
 	obj = gem_to_virtio_gpu_obj(gobj);
 	*offset_p = virtio_gpu_object_mmap_offset(obj);
-	drm_gem_object_unreference_unlocked(gobj);
+	drm_gem_object_put_unlocked(gobj);
 	return 0;
 }
 
@@ -142,7 +142,7 @@ int virtio_gpu_gem_object_open(struct drm_gem_object *obj,
 	struct virtio_gpu_object *qobj = gem_to_virtio_gpu_obj(obj);
 	int r;
 
-	if (!vgdev->has_virgl_3d)
+	if (!vgdev->has_virgl_3d || !qobj->hw_res_handle)
 		return 0;
 
 	r = virtio_gpu_object_reserve(qobj, false);

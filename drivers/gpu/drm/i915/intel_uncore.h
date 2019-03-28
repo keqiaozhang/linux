@@ -102,6 +102,13 @@ struct intel_uncore {
 		i915_reg_t reg_ack;
 	} fw_domain[FW_DOMAIN_ID_COUNT];
 
+	struct {
+		unsigned int count;
+
+		int saved_mmio_check;
+		int saved_mmio_debug;
+	} user_forcewake;
+
 	int unclaimed_mmio_check;
 };
 
@@ -121,6 +128,7 @@ bool intel_uncore_arm_unclaimed_mmio_detection(struct drm_i915_private *dev_priv
 void intel_uncore_fini(struct drm_i915_private *dev_priv);
 void intel_uncore_suspend(struct drm_i915_private *dev_priv);
 void intel_uncore_resume_early(struct drm_i915_private *dev_priv);
+void intel_uncore_runtime_resume(struct drm_i915_private *dev_priv);
 
 u64 intel_uncore_edram_size(struct drm_i915_private *dev_priv);
 void assert_forcewakes_inactive(struct drm_i915_private *dev_priv);
@@ -143,6 +151,9 @@ void intel_uncore_forcewake_get__locked(struct drm_i915_private *dev_priv,
 					enum forcewake_domains domains);
 void intel_uncore_forcewake_put__locked(struct drm_i915_private *dev_priv,
 					enum forcewake_domains domains);
+
+void intel_uncore_forcewake_user_get(struct drm_i915_private *dev_priv);
+void intel_uncore_forcewake_user_put(struct drm_i915_private *dev_priv);
 
 int intel_wait_for_register(struct drm_i915_private *dev_priv,
 			    i915_reg_t reg,

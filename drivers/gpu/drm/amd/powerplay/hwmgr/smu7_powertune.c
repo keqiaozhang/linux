@@ -403,6 +403,49 @@ static const struct gpu_pt_config_reg DIDTConfig_Polaris12[] = {
 	{   ixDIDT_SQ_CTRL1,                   DIDT_SQ_CTRL1__MAX_POWER_MASK,                      DIDT_SQ_CTRL1__MAX_POWER__SHIFT,                    0xffff,     GPU_CONFIGREG_DIDT_IND },
 
 	{   ixDIDT_SQ_CTRL_OCP,                DIDT_SQ_CTRL_OCP__UNUSED_0_MASK,                    DIDT_SQ_CTRL_OCP__UNUSED_0__SHIFT,                  0x0000,     GPU_CONFIGREG_DIDT_IND },
+	{   ixDIDT_SQ_CTRL_OCP,                DIDT_SQ_CTRL_OCP__OCP_MAX_POWER_MASK,               DIDT_SQ_CTRL_OCP__OCP_MAX_POWER__SHIFT,             0xffff,     GPU_CONFIGREG_DIDT_IND },
+
+	{   ixDIDT_SQ_CTRL2,                   DIDT_SQ_CTRL2__MAX_POWER_DELTA_MASK,                DIDT_SQ_CTRL2__MAX_POWER_DELTA__SHIFT,              0x3853,     GPU_CONFIGREG_DIDT_IND },
+	{   ixDIDT_SQ_CTRL2,                   DIDT_SQ_CTRL2__UNUSED_0_MASK,                       DIDT_SQ_CTRL2__UNUSED_0__SHIFT,                     0x0000,     GPU_CONFIGREG_DIDT_IND },
+	{   ixDIDT_SQ_CTRL2,                   DIDT_SQ_CTRL2__SHORT_TERM_INTERVAL_SIZE_MASK,       DIDT_SQ_CTRL2__SHORT_TERM_INTERVAL_SIZE__SHIFT,     0x005a,     GPU_CONFIGREG_DIDT_IND },
+	{   ixDIDT_SQ_CTRL2,                   DIDT_SQ_CTRL2__UNUSED_1_MASK,                       DIDT_SQ_CTRL2__UNUSED_1__SHIFT,                     0x0000,     GPU_CONFIGREG_DIDT_IND },
+	{   ixDIDT_SQ_CTRL2,                   DIDT_SQ_CTRL2__LONG_TERM_INTERVAL_RATIO_MASK,       DIDT_SQ_CTRL2__LONG_TERM_INTERVAL_RATIO__SHIFT,     0x0000,     GPU_CONFIGREG_DIDT_IND },
+	{   ixDIDT_SQ_CTRL2,                   DIDT_SQ_CTRL2__UNUSED_2_MASK,                       DIDT_SQ_CTRL2__UNUSED_2__SHIFT,                     0x0000,     GPU_CONFIGREG_DIDT_IND },
+
+	{   ixDIDT_SQ_STALL_CTRL,              DIDT_SQ_STALL_CTRL__DIDT_STALL_CTRL_ENABLE_MASK,    DIDT_SQ_STALL_CTRL__DIDT_STALL_CTRL_ENABLE__SHIFT,  0x0001,     GPU_CONFIGREG_DIDT_IND },
+	{   ixDIDT_SQ_STALL_CTRL,              DIDT_SQ_STALL_CTRL__DIDT_STALL_DELAY_HI_MASK,       DIDT_SQ_STALL_CTRL__DIDT_STALL_DELAY_HI__SHIFT,     0x0001,     GPU_CONFIGREG_DIDT_IND },
+	{   ixDIDT_SQ_STALL_CTRL,              DIDT_SQ_STALL_CTRL__DIDT_STALL_DELAY_LO_MASK,       DIDT_SQ_STALL_CTRL__DIDT_STALL_DELAY_LO__SHIFT,     0x0001,     GPU_CONFIGREG_DIDT_IND },
+	{   ixDIDT_SQ_STALL_CTRL,              DIDT_SQ_STALL_CTRL__DIDT_HI_POWER_THRESHOLD_MASK,   DIDT_SQ_STALL_CTRL__DIDT_HI_POWER_THRESHOLD__SHIFT, 0x0ebb,     GPU_CONFIGREG_DIDT_IND },
+	{   ixDIDT_SQ_STALL_CTRL,              DIDT_SQ_STALL_CTRL__UNUSED_0_MASK,                  DIDT_SQ_STALL_CTRL__UNUSED_0__SHIFT,                0x0000,     GPU_CONFIGREG_DIDT_IND },
+
+	{   ixDIDT_SQ_TUNING_CTRL,             DIDT_SQ_TUNING_CTRL__DIDT_TUNING_ENABLE_MASK,       DIDT_SQ_TUNING_CTRL__DIDT_TUNING_ENABLE__SHIFT,     0x0001,     GPU_CONFIGREG_DIDT_IND },
+	{   ixDIDT_SQ_TUNING_CTRL,             DIDT_SQ_TUNING_CTRL__MAX_POWER_DELTA_HI_MASK,       DIDT_SQ_TUNING_CTRL__MAX_POWER_DELTA_HI__SHIFT,     0x3853,     GPU_CONFIGREG_DIDT_IND },
+	{   ixDIDT_SQ_TUNING_CTRL,             DIDT_SQ_TUNING_CTRL__MAX_POWER_DELTA_LO_MASK,       DIDT_SQ_TUNING_CTRL__MAX_POWER_DELTA_LO__SHIFT,     0x3153,     GPU_CONFIGREG_DIDT_IND },
+	{   ixDIDT_SQ_TUNING_CTRL,             DIDT_SQ_TUNING_CTRL__UNUSED_0_MASK,                 DIDT_SQ_TUNING_CTRL__UNUSED_0__SHIFT,               0x0000,     GPU_CONFIGREG_DIDT_IND },
+
+	{   ixDIDT_SQ_CTRL0,                   DIDT_SQ_CTRL0__DIDT_CTRL_EN_MASK,                   DIDT_SQ_CTRL0__DIDT_CTRL_EN__SHIFT,                 0x0001,     GPU_CONFIGREG_DIDT_IND },
+	{   ixDIDT_SQ_CTRL0,                   DIDT_SQ_CTRL0__USE_REF_CLOCK_MASK,                  DIDT_SQ_CTRL0__USE_REF_CLOCK__SHIFT,                0x0000,     GPU_CONFIGREG_DIDT_IND },
+	{   ixDIDT_SQ_CTRL0,                   DIDT_SQ_CTRL0__PHASE_OFFSET_MASK,                   DIDT_SQ_CTRL0__PHASE_OFFSET__SHIFT,                 0x0000,     GPU_CONFIGREG_DIDT_IND },
+	{   ixDIDT_SQ_CTRL0,                   DIDT_SQ_CTRL0__DIDT_CTRL_RST_MASK,                  DIDT_SQ_CTRL0__DIDT_CTRL_RST__SHIFT,                0x0000,     GPU_CONFIGREG_DIDT_IND },
+	{   ixDIDT_SQ_CTRL0,                   DIDT_SQ_CTRL0__DIDT_CLK_EN_OVERRIDE_MASK,           DIDT_SQ_CTRL0__DIDT_CLK_EN_OVERRIDE__SHIFT,         0x0000,     GPU_CONFIGREG_DIDT_IND },
+	{   ixDIDT_SQ_CTRL0,                   DIDT_SQ_CTRL0__DIDT_MAX_STALLS_ALLOWED_HI_MASK,     DIDT_SQ_CTRL0__DIDT_MAX_STALLS_ALLOWED_HI__SHIFT,   0x0010,     GPU_CONFIGREG_DIDT_IND },
+	{   ixDIDT_SQ_CTRL0,                   DIDT_SQ_CTRL0__DIDT_MAX_STALLS_ALLOWED_LO_MASK,     DIDT_SQ_CTRL0__DIDT_MAX_STALLS_ALLOWED_LO__SHIFT,   0x0010,     GPU_CONFIGREG_DIDT_IND },
+	{   ixDIDT_SQ_CTRL0,                   DIDT_SQ_CTRL0__UNUSED_0_MASK,                       DIDT_SQ_CTRL0__UNUSED_0__SHIFT,                     0x0000,     GPU_CONFIGREG_DIDT_IND },
+
+	{   ixDIDT_TD_WEIGHT0_3,               DIDT_TD_WEIGHT0_3__WEIGHT0_MASK,                    DIDT_TD_WEIGHT0_3__WEIGHT0__SHIFT,                  0x000a,     GPU_CONFIGREG_DIDT_IND },
+	{   ixDIDT_TD_WEIGHT0_3,               DIDT_TD_WEIGHT0_3__WEIGHT1_MASK,                    DIDT_TD_WEIGHT0_3__WEIGHT1__SHIFT,                  0x0010,     GPU_CONFIGREG_DIDT_IND },
+	{   ixDIDT_TD_WEIGHT0_3,               DIDT_TD_WEIGHT0_3__WEIGHT2_MASK,                    DIDT_TD_WEIGHT0_3__WEIGHT2__SHIFT,                  0x0017,     GPU_CONFIGREG_DIDT_IND },
+	{   ixDIDT_TD_WEIGHT0_3,               DIDT_TD_WEIGHT0_3__WEIGHT3_MASK,                    DIDT_TD_WEIGHT0_3__WEIGHT3__SHIFT,                  0x002f,     GPU_CONFIGREG_DIDT_IND },
+
+	{   ixDIDT_TD_WEIGHT4_7,               DIDT_TD_WEIGHT4_7__WEIGHT4_MASK,                    DIDT_TD_WEIGHT4_7__WEIGHT4__SHIFT,                  0x0046,     GPU_CONFIGREG_DIDT_IND },
+	{   ixDIDT_TD_WEIGHT4_7,               DIDT_TD_WEIGHT4_7__WEIGHT5_MASK,                    DIDT_TD_WEIGHT4_7__WEIGHT5__SHIFT,                  0x005d,     GPU_CONFIGREG_DIDT_IND },
+	{   ixDIDT_TD_WEIGHT4_7,               DIDT_TD_WEIGHT4_7__WEIGHT6_MASK,                    DIDT_TD_WEIGHT4_7__WEIGHT6__SHIFT,                  0x0000,     GPU_CONFIGREG_DIDT_IND },
+	{   ixDIDT_TD_WEIGHT4_7,               DIDT_TD_WEIGHT4_7__WEIGHT7_MASK,                    DIDT_TD_WEIGHT4_7__WEIGHT7__SHIFT,                  0x0000,     GPU_CONFIGREG_DIDT_IND },
+
+	{   ixDIDT_TD_CTRL1,                   DIDT_TD_CTRL1__MIN_POWER_MASK,                      DIDT_TD_CTRL1__MIN_POWER__SHIFT,                    0x0000,     GPU_CONFIGREG_DIDT_IND },
+	{   ixDIDT_TD_CTRL1,                   DIDT_TD_CTRL1__MAX_POWER_MASK,                      DIDT_TD_CTRL1__MAX_POWER__SHIFT,                    0xffff,     GPU_CONFIGREG_DIDT_IND },
+
+	{   ixDIDT_TD_CTRL_OCP,                DIDT_TD_CTRL_OCP__UNUSED_0_MASK,                    DIDT_TD_CTRL_OCP__UNUSED_0__SHIFT,                  0x0000,     GPU_CONFIGREG_DIDT_IND },
 	{   ixDIDT_TD_CTRL_OCP,                DIDT_TD_CTRL_OCP__OCP_MAX_POWER_MASK,               DIDT_TD_CTRL_OCP__OCP_MAX_POWER__SHIFT,             0x00ff,     GPU_CONFIGREG_DIDT_IND },
 
 	{   ixDIDT_TD_CTRL2,                   DIDT_TD_CTRL2__MAX_POWER_DELTA_MASK,                DIDT_TD_CTRL2__MAX_POWER_DELTA__SHIFT,              0x3fff,     GPU_CONFIGREG_DIDT_IND },
@@ -629,51 +672,38 @@ static int smu7_enable_didt(struct pp_hwmgr *hwmgr, const bool enable)
 	uint32_t block_en = 0;
 	int32_t result = 0;
 	uint32_t didt_block;
-	uint32_t data;
 
 	if (hwmgr->chip_id == CHIP_POLARIS11)
 		didt_block = Polaris11_DIDTBlock_Info;
 	else
 		didt_block = DIDTBlock_Info;
 
-	block_en = phm_cap_enabled(hwmgr->platform_descriptor.platformCaps, PHM_PlatformCaps_SQRamping) ? en : 0;
-
-	data = cgs_read_ind_register(hwmgr->device, CGS_IND_REG__DIDT, ixDIDT_SQ_CTRL0);
-	data &= ~DIDT_SQ_CTRL0__DIDT_CTRL_EN_MASK;
-	data |= ((block_en << DIDT_SQ_CTRL0__DIDT_CTRL_EN__SHIFT) & DIDT_SQ_CTRL0__DIDT_CTRL_EN_MASK);
-	cgs_write_ind_register(hwmgr->device, CGS_IND_REG__DIDT, ixDIDT_SQ_CTRL0, data);
+	block_en = PP_CAP(PHM_PlatformCaps_SQRamping) ? en : 0;
+	CGS_WREG32_FIELD_IND(hwmgr->device, CGS_IND_REG__DIDT,
+			     DIDT_SQ_CTRL0, DIDT_CTRL_EN, block_en);
 	didt_block &= ~SQ_Enable_MASK;
 	didt_block |= block_en << SQ_Enable_SHIFT;
 
-	block_en = phm_cap_enabled(hwmgr->platform_descriptor.platformCaps, PHM_PlatformCaps_DBRamping) ? en : 0;
-
-	data = cgs_read_ind_register(hwmgr->device, CGS_IND_REG__DIDT, ixDIDT_DB_CTRL0);
-	data &= ~DIDT_DB_CTRL0__DIDT_CTRL_EN_MASK;
-	data |= ((block_en << DIDT_DB_CTRL0__DIDT_CTRL_EN__SHIFT) & DIDT_DB_CTRL0__DIDT_CTRL_EN_MASK);
-	cgs_write_ind_register(hwmgr->device, CGS_IND_REG__DIDT, ixDIDT_DB_CTRL0, data);
+	block_en = PP_CAP(PHM_PlatformCaps_DBRamping) ? en : 0;
+	CGS_WREG32_FIELD_IND(hwmgr->device, CGS_IND_REG__DIDT,
+			     DIDT_DB_CTRL0, DIDT_CTRL_EN, block_en);
 	didt_block &= ~DB_Enable_MASK;
 	didt_block |= block_en << DB_Enable_SHIFT;
 
-	block_en = phm_cap_enabled(hwmgr->platform_descriptor.platformCaps, PHM_PlatformCaps_TDRamping) ? en : 0;
-	data = cgs_read_ind_register(hwmgr->device, CGS_IND_REG__DIDT, ixDIDT_TD_CTRL0);
-	data &= ~DIDT_TD_CTRL0__DIDT_CTRL_EN_MASK;
-	data |= ((block_en << DIDT_TD_CTRL0__DIDT_CTRL_EN__SHIFT) & DIDT_TD_CTRL0__DIDT_CTRL_EN_MASK);
-	cgs_write_ind_register(hwmgr->device, CGS_IND_REG__DIDT, ixDIDT_TD_CTRL0, data);
+	block_en = PP_CAP(PHM_PlatformCaps_TDRamping) ? en : 0;
+	CGS_WREG32_FIELD_IND(hwmgr->device, CGS_IND_REG__DIDT,
+			     DIDT_TD_CTRL0, DIDT_CTRL_EN, block_en);
 	didt_block &= ~TD_Enable_MASK;
 	didt_block |= block_en << TD_Enable_SHIFT;
 
-	block_en = phm_cap_enabled(hwmgr->platform_descriptor.platformCaps, PHM_PlatformCaps_TCPRamping) ? en : 0;
-
-	data = cgs_read_ind_register(hwmgr->device, CGS_IND_REG__DIDT, ixDIDT_TCP_CTRL0);
-	data &= ~DIDT_TCP_CTRL0__DIDT_CTRL_EN_MASK;
-	data |= ((block_en << DIDT_TCP_CTRL0__DIDT_CTRL_EN__SHIFT) & DIDT_TCP_CTRL0__DIDT_CTRL_EN_MASK);
-	cgs_write_ind_register(hwmgr->device, CGS_IND_REG__DIDT, ixDIDT_TCP_CTRL0, data);
+	block_en = PP_CAP(PHM_PlatformCaps_TCPRamping) ? en : 0;
+	CGS_WREG32_FIELD_IND(hwmgr->device, CGS_IND_REG__DIDT,
+			     DIDT_TCP_CTRL0, DIDT_CTRL_EN, block_en);
 	didt_block &= ~TCP_Enable_MASK;
 	didt_block |= block_en << TCP_Enable_SHIFT;
 
-
 	if (enable)
-		result = smum_send_msg_to_smc_with_parameter(hwmgr->smumgr, PPSMC_MSG_Didt_Block_Function, didt_block);
+		result = smum_send_msg_to_smc_with_parameter(hwmgr, PPSMC_MSG_Didt_Block_Function, didt_block);
 
 	return result;
 }
@@ -753,12 +783,13 @@ int smu7_enable_didt_config(struct pp_hwmgr *hwmgr)
 	if (result == 0)
 		num_se = sys_info.value;
 
-	if (phm_cap_enabled(hwmgr->platform_descriptor.platformCaps, PHM_PlatformCaps_SQRamping) ||
-		phm_cap_enabled(hwmgr->platform_descriptor.platformCaps, PHM_PlatformCaps_DBRamping) ||
-		phm_cap_enabled(hwmgr->platform_descriptor.platformCaps, PHM_PlatformCaps_TDRamping) ||
-		phm_cap_enabled(hwmgr->platform_descriptor.platformCaps, PHM_PlatformCaps_TCPRamping)) {
+	if (PP_CAP(PHM_PlatformCaps_SQRamping) ||
+	    PP_CAP(PHM_PlatformCaps_DBRamping) ||
+	    PP_CAP(PHM_PlatformCaps_TDRamping) ||
+	    PP_CAP(PHM_PlatformCaps_TCPRamping)) {
 
 		cgs_enter_safe_mode(hwmgr->device, true);
+		cgs_lock_grbm_idx(hwmgr->device, true);
 		value = 0;
 		value2 = cgs_read_register(hwmgr->device, mmGRBM_GFX_INDEX);
 		for (count = 0; count < num_se; count++) {
@@ -775,7 +806,7 @@ int smu7_enable_didt_config(struct pp_hwmgr *hwmgr)
 			} else if (hwmgr->chip_id == CHIP_POLARIS11) {
 				result = smu7_program_pt_config_registers(hwmgr, GCCACConfig_Polaris11);
 				PP_ASSERT_WITH_CODE((result == 0), "DIDT Config failed.", return result);
-				if (hwmgr->smumgr->is_kicker)
+				if (hwmgr->is_kicker)
 					result = smu7_program_pt_config_registers(hwmgr, DIDTConfig_Polaris11_Kicker);
 				else
 					result = smu7_program_pt_config_registers(hwmgr, DIDTConfig_Polaris11);
@@ -793,11 +824,12 @@ int smu7_enable_didt_config(struct pp_hwmgr *hwmgr)
 		PP_ASSERT_WITH_CODE((result == 0), "EnableDiDt failed.", return result);
 
 		if (hwmgr->chip_id == CHIP_POLARIS11) {
-			result = smum_send_msg_to_smc(hwmgr->smumgr,
+			result = smum_send_msg_to_smc(hwmgr,
 						(uint16_t)(PPSMC_MSG_EnableDpmDidt));
 			PP_ASSERT_WITH_CODE((0 == result),
 					"Failed to enable DPM DIDT.", return result);
 		}
+		cgs_lock_grbm_idx(hwmgr->device, false);
 		cgs_enter_safe_mode(hwmgr->device, false);
 	}
 
@@ -808,10 +840,10 @@ int smu7_disable_didt_config(struct pp_hwmgr *hwmgr)
 {
 	int result;
 
-	if (phm_cap_enabled(hwmgr->platform_descriptor.platformCaps, PHM_PlatformCaps_SQRamping) ||
-		phm_cap_enabled(hwmgr->platform_descriptor.platformCaps, PHM_PlatformCaps_DBRamping) ||
-		phm_cap_enabled(hwmgr->platform_descriptor.platformCaps, PHM_PlatformCaps_TDRamping) ||
-		phm_cap_enabled(hwmgr->platform_descriptor.platformCaps, PHM_PlatformCaps_TCPRamping)) {
+	if (PP_CAP(PHM_PlatformCaps_SQRamping) ||
+	    PP_CAP(PHM_PlatformCaps_DBRamping) ||
+	    PP_CAP(PHM_PlatformCaps_TDRamping) ||
+	    PP_CAP(PHM_PlatformCaps_TCPRamping)) {
 
 		cgs_enter_safe_mode(hwmgr->device, true);
 
@@ -820,7 +852,7 @@ int smu7_disable_didt_config(struct pp_hwmgr *hwmgr)
 				"Post DIDT enable clock gating failed.",
 				return result);
 		if (hwmgr->chip_id == CHIP_POLARIS11) {
-			result = smum_send_msg_to_smc(hwmgr->smumgr,
+			result = smum_send_msg_to_smc(hwmgr,
 						(uint16_t)(PPSMC_MSG_DisableDpmDidt));
 			PP_ASSERT_WITH_CODE((0 == result),
 					"Failed to disable DPM DIDT.", return result);
@@ -836,10 +868,9 @@ int smu7_enable_smc_cac(struct pp_hwmgr *hwmgr)
 	struct smu7_hwmgr *data = (struct smu7_hwmgr *)(hwmgr->backend);
 	int result = 0;
 
-	if (phm_cap_enabled(hwmgr->platform_descriptor.platformCaps,
-			PHM_PlatformCaps_CAC)) {
+	if (PP_CAP(PHM_PlatformCaps_CAC)) {
 		int smc_result;
-		smc_result = smum_send_msg_to_smc(hwmgr->smumgr,
+		smc_result = smum_send_msg_to_smc(hwmgr,
 				(uint16_t)(PPSMC_MSG_EnableCac));
 		PP_ASSERT_WITH_CODE((0 == smc_result),
 				"Failed to enable CAC in SMC.", result = -1);
@@ -854,9 +885,8 @@ int smu7_disable_smc_cac(struct pp_hwmgr *hwmgr)
 	struct smu7_hwmgr *data = (struct smu7_hwmgr *)(hwmgr->backend);
 	int result = 0;
 
-	if (phm_cap_enabled(hwmgr->platform_descriptor.platformCaps,
-			PHM_PlatformCaps_CAC) && data->cac_enabled) {
-		int smc_result = smum_send_msg_to_smc(hwmgr->smumgr,
+	if (PP_CAP(PHM_PlatformCaps_CAC) && data->cac_enabled) {
+		int smc_result = smum_send_msg_to_smc(hwmgr,
 				(uint16_t)(PPSMC_MSG_DisableCac));
 		PP_ASSERT_WITH_CODE((smc_result == 0),
 				"Failed to disable CAC in SMC.", result = -1);
@@ -872,7 +902,7 @@ int smu7_set_power_limit(struct pp_hwmgr *hwmgr, uint32_t n)
 
 	if (data->power_containment_features &
 			POWERCONTAINMENT_FEATURE_PkgPwrLimit)
-		return smum_send_msg_to_smc_with_parameter(hwmgr->smumgr,
+		return smum_send_msg_to_smc_with_parameter(hwmgr,
 				PPSMC_MSG_PkgPwrSetLimit, n);
 	return 0;
 }
@@ -880,7 +910,7 @@ int smu7_set_power_limit(struct pp_hwmgr *hwmgr, uint32_t n)
 static int smu7_set_overdriver_target_tdp(struct pp_hwmgr *hwmgr,
 						uint32_t target_tdp)
 {
-	return smum_send_msg_to_smc_with_parameter(hwmgr->smumgr,
+	return smum_send_msg_to_smc_with_parameter(hwmgr,
 			PPSMC_MSG_OverDriveSetTargetTdp, target_tdp);
 }
 
@@ -899,11 +929,9 @@ int smu7_enable_power_containment(struct pp_hwmgr *hwmgr)
 	else
 		cac_table = hwmgr->dyn_state.cac_dtp_table;
 
-	if (phm_cap_enabled(hwmgr->platform_descriptor.platformCaps,
-			PHM_PlatformCaps_PowerContainment)) {
-
+	if (PP_CAP(PHM_PlatformCaps_PowerContainment)) {
 		if (data->enable_tdc_limit_feature) {
-			smc_result = smum_send_msg_to_smc(hwmgr->smumgr,
+			smc_result = smum_send_msg_to_smc(hwmgr,
 					(uint16_t)(PPSMC_MSG_TDCLimitEnable));
 			PP_ASSERT_WITH_CODE((0 == smc_result),
 					"Failed to enable TDCLimit in SMC.", result = -1;);
@@ -913,14 +941,13 @@ int smu7_enable_power_containment(struct pp_hwmgr *hwmgr)
 		}
 
 		if (data->enable_pkg_pwr_tracking_feature) {
-			smc_result = smum_send_msg_to_smc(hwmgr->smumgr,
+			smc_result = smum_send_msg_to_smc(hwmgr,
 					(uint16_t)(PPSMC_MSG_PkgPwrLimitEnable));
 			PP_ASSERT_WITH_CODE((0 == smc_result),
 					"Failed to enable PkgPwrTracking in SMC.", result = -1;);
 			if (0 == smc_result) {
 				uint32_t default_limit =
 					(uint32_t)(cac_table->usMaximumPowerDeliveryLimit * 256);
-
 				data->power_containment_features |=
 						POWERCONTAINMENT_FEATURE_PkgPwrLimit;
 
@@ -937,14 +964,13 @@ int smu7_disable_power_containment(struct pp_hwmgr *hwmgr)
 	struct smu7_hwmgr *data = (struct smu7_hwmgr *)(hwmgr->backend);
 	int result = 0;
 
-	if (phm_cap_enabled(hwmgr->platform_descriptor.platformCaps,
-			PHM_PlatformCaps_PowerContainment) &&
-			data->power_containment_features) {
+	if (PP_CAP(PHM_PlatformCaps_PowerContainment) &&
+	    data->power_containment_features) {
 		int smc_result;
 
 		if (data->power_containment_features &
 				POWERCONTAINMENT_FEATURE_TDCLimit) {
-			smc_result = smum_send_msg_to_smc(hwmgr->smumgr,
+			smc_result = smum_send_msg_to_smc(hwmgr,
 					(uint16_t)(PPSMC_MSG_TDCLimitDisable));
 			PP_ASSERT_WITH_CODE((smc_result == 0),
 					"Failed to disable TDCLimit in SMC.",
@@ -953,7 +979,7 @@ int smu7_disable_power_containment(struct pp_hwmgr *hwmgr)
 
 		if (data->power_containment_features &
 				POWERCONTAINMENT_FEATURE_DTE) {
-			smc_result = smum_send_msg_to_smc(hwmgr->smumgr,
+			smc_result = smum_send_msg_to_smc(hwmgr,
 					(uint16_t)(PPSMC_MSG_DisableDTE));
 			PP_ASSERT_WITH_CODE((smc_result == 0),
 					"Failed to disable DTE in SMC.",
@@ -962,7 +988,7 @@ int smu7_disable_power_containment(struct pp_hwmgr *hwmgr)
 
 		if (data->power_containment_features &
 				POWERCONTAINMENT_FEATURE_PkgPwrLimit) {
-			smc_result = smum_send_msg_to_smc(hwmgr->smumgr,
+			smc_result = smum_send_msg_to_smc(hwmgr,
 					(uint16_t)(PPSMC_MSG_PkgPwrLimitDisable));
 			PP_ASSERT_WITH_CODE((smc_result == 0),
 					"Failed to disable PkgPwrTracking in SMC.",
@@ -987,16 +1013,17 @@ int smu7_power_control_set_level(struct pp_hwmgr *hwmgr)
 		cac_table = table_info->cac_dtp_table;
 	else
 		cac_table = hwmgr->dyn_state.cac_dtp_table;
-	if (phm_cap_enabled(hwmgr->platform_descriptor.platformCaps,
-			PHM_PlatformCaps_PowerContainment)) {
+	if (PP_CAP(PHM_PlatformCaps_PowerContainment)) {
 		/* adjustment percentage has already been validated */
 		adjust_percent = hwmgr->platform_descriptor.TDPAdjustmentPolarity ?
 				hwmgr->platform_descriptor.TDPAdjustment :
 				(-1 * hwmgr->platform_descriptor.TDPAdjustment);
-		/* SMC requested that target_tdp to be 7 bit fraction in DPM table
-		 * but message to be 8 bit fraction for messages
-		 */
-		target_tdp = ((100 + adjust_percent) * (int)(cac_table->usTDP * 256)) / 100;
+
+		 if (hwmgr->chip_id > CHIP_TONGA)
+			target_tdp = ((100 + adjust_percent) * (int)(cac_table->usTDP * 256)) / 100;
+		else
+			target_tdp = ((100 + adjust_percent) * (int)(cac_table->usConfigurableTDP * 256)) / 100;
+
 		result = smu7_set_overdriver_target_tdp(hwmgr, (uint32_t)target_tdp);
 	}
 

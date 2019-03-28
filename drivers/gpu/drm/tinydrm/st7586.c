@@ -17,6 +17,8 @@
 #include <linux/spi/spi.h>
 #include <video/mipi_display.h>
 
+#include <drm/drm_fb_helper.h>
+#include <drm/drm_gem_framebuffer_helper.h>
 #include <drm/tinydrm/mipi-dbi.h>
 #include <drm/tinydrm/tinydrm-helpers.h>
 
@@ -167,8 +169,8 @@ out_unlock:
 }
 
 static const struct drm_framebuffer_funcs st7586_fb_funcs = {
-	.destroy	= drm_fb_cma_destroy,
-	.create_handle	= drm_fb_cma_create_handle,
+	.destroy	= drm_gem_fb_destroy,
+	.create_handle	= drm_gem_fb_create_handle,
 	.dirty		= st7586_fb_dirty,
 };
 
@@ -319,7 +321,7 @@ static struct drm_driver st7586_driver = {
 				  DRIVER_ATOMIC,
 	.fops			= &st7586_fops,
 	TINYDRM_GEM_DRIVER_OPS,
-	.lastclose		= tinydrm_lastclose,
+	.lastclose		= drm_fb_helper_lastclose,
 	.debugfs_init		= mipi_dbi_debugfs_init,
 	.name			= "st7586",
 	.desc			= "Sitronix ST7586",

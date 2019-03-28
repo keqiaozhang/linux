@@ -44,8 +44,6 @@
 /* Private structure for the integrated LVDS support */
 struct intel_lvds_connector {
 	struct intel_connector base;
-
-	struct notifier_block lid_notifier;
 };
 
 struct intel_lvds_pps {
@@ -229,8 +227,8 @@ static void intel_lvds_pps_init_hw(struct drm_i915_private *dev_priv,
 }
 
 static void intel_pre_enable_lvds(struct intel_encoder *encoder,
-				  struct intel_crtc_state *pipe_config,
-				  struct drm_connector_state *conn_state)
+				  const struct intel_crtc_state *pipe_config,
+				  const struct drm_connector_state *conn_state)
 {
 	struct intel_lvds_encoder *lvds_encoder = to_lvds_encoder(&encoder->base);
 	struct drm_i915_private *dev_priv = to_i915(encoder->base.dev);
@@ -306,8 +304,8 @@ static void intel_pre_enable_lvds(struct intel_encoder *encoder,
  * Sets the power state for the panel.
  */
 static void intel_enable_lvds(struct intel_encoder *encoder,
-			      struct intel_crtc_state *pipe_config,
-			      struct drm_connector_state *conn_state)
+			      const struct intel_crtc_state *pipe_config,
+			      const struct drm_connector_state *conn_state)
 {
 	struct drm_device *dev = encoder->base.dev;
 	struct intel_lvds_encoder *lvds_encoder = to_lvds_encoder(&encoder->base);
@@ -317,15 +315,16 @@ static void intel_enable_lvds(struct intel_encoder *encoder,
 
 	I915_WRITE(PP_CONTROL(0), I915_READ(PP_CONTROL(0)) | PANEL_POWER_ON);
 	POSTING_READ(lvds_encoder->reg);
-	if (intel_wait_for_register(dev_priv, PP_STATUS(0), PP_ON, PP_ON, 1000))
+
+	if (intel_wait_for_register(dev_priv, PP_STATUS(0), PP_ON, PP_ON, 5000))
 		DRM_ERROR("timed out waiting for panel to power on\n");
 
 	intel_panel_enable_backlight(pipe_config, conn_state);
 }
 
 static void intel_disable_lvds(struct intel_encoder *encoder,
-			       struct intel_crtc_state *old_crtc_state,
-			       struct drm_connector_state *old_conn_state)
+			       const struct intel_crtc_state *old_crtc_state,
+			       const struct drm_connector_state *old_conn_state)
 {
 	struct intel_lvds_encoder *lvds_encoder = to_lvds_encoder(&encoder->base);
 	struct drm_i915_private *dev_priv = to_i915(encoder->base.dev);
@@ -339,8 +338,8 @@ static void intel_disable_lvds(struct intel_encoder *encoder,
 }
 
 static void gmch_disable_lvds(struct intel_encoder *encoder,
-			      struct intel_crtc_state *old_crtc_state,
-			      struct drm_connector_state *old_conn_state)
+			      const struct intel_crtc_state *old_crtc_state,
+			      const struct drm_connector_state *old_conn_state)
 
 {
 	intel_panel_disable_backlight(old_conn_state);
@@ -349,15 +348,15 @@ static void gmch_disable_lvds(struct intel_encoder *encoder,
 }
 
 static void pch_disable_lvds(struct intel_encoder *encoder,
-			     struct intel_crtc_state *old_crtc_state,
-			     struct drm_connector_state *old_conn_state)
+			     const struct intel_crtc_state *old_crtc_state,
+			     const struct drm_connector_state *old_conn_state)
 {
 	intel_panel_disable_backlight(old_conn_state);
 }
 
 static void pch_post_disable_lvds(struct intel_encoder *encoder,
-				  struct intel_crtc_state *old_crtc_state,
-				  struct drm_connector_state *old_conn_state)
+				  const struct intel_crtc_state *old_crtc_state,
+				  const struct drm_connector_state *old_conn_state)
 {
 	intel_disable_lvds(encoder, old_crtc_state, old_conn_state);
 }
@@ -439,26 +438,9 @@ static bool intel_lvds_compute_config(struct intel_encoder *intel_encoder,
 	return true;
 }
 
-/**
- * Detect the LVDS connection.
- *
- * Since LVDS doesn't have hotlug, we use the lid as a proxy.  Open means
- * connected and closed means disconnected.  We also send hotplug events as
- * needed, using lid status notification from the input layer.
- */
 static enum drm_connector_status
 intel_lvds_detect(struct drm_connector *connector, bool force)
 {
-	struct drm_i915_private *dev_priv = to_i915(connector->dev);
-	enum drm_connector_status status;
-
-	DRM_DEBUG_KMS("[CONNECTOR:%d:%s]\n",
-		      connector->base.id, connector->name);
-
-	status = intel_panel_detect(dev_priv);
-	if (status != connector_status_unknown)
-		return status;
-
 	return connector_status_connected;
 }
 
@@ -483,87 +465,6 @@ static int intel_lvds_get_modes(struct drm_connector *connector)
 	return 1;
 }
 
-static int intel_no_modeset_on_lid_dmi_callback(const struct dmi_system_id *id)
-{
-	DRM_INFO("Skipping forced modeset for %s\n", id->ident);
-	return 1;
-}
-
-/* The GPU hangs up on these systems if modeset is performed on LID open */
-static const struct dmi_system_id intel_no_modeset_on_lid[] = {
-	{
-		.callback = intel_no_modeset_on_lid_dmi_callback,
-		.ident = "Toshiba Tecra A11",
-		.matches = {
-			DMI_MATCH(DMI_SYS_VENDOR, "TOSHIBA"),
-			DMI_MATCH(DMI_PRODUCT_NAME, "TECRA A11"),
-		},
-	},
-
-	{ }	/* terminating entry */
-};
-
-/*
- * Lid events. Note the use of 'modeset':
- *  - we set it to MODESET_ON_LID_OPEN on lid close,
- *    and set it to MODESET_DONE on open
- *  - we use it as a "only once" bit (ie we ignore
- *    duplicate events where it was already properly set)
- *  - the suspend/resume paths will set it to
- *    MODESET_SUSPENDED and ignore the lid open event,
- *    because they restore the mode ("lid open").
- */
-static int intel_lid_notify(struct notifier_block *nb, unsigned long val,
-			    void *unused)
-{
-	struct intel_lvds_connector *lvds_connector =
-		container_of(nb, struct intel_lvds_connector, lid_notifier);
-	struct drm_connector *connector = &lvds_connector->base.base;
-	struct drm_device *dev = connector->dev;
-	struct drm_i915_private *dev_priv = to_i915(dev);
-
-	if (dev->switch_power_state != DRM_SWITCH_POWER_ON)
-		return NOTIFY_OK;
-
-	mutex_lock(&dev_priv->modeset_restore_lock);
-	if (dev_priv->modeset_restore == MODESET_SUSPENDED)
-		goto exit;
-	/*
-	 * check and update the status of LVDS connector after receiving
-	 * the LID nofication event.
-	 */
-	connector->status = connector->funcs->detect(connector, false);
-
-	/* Don't force modeset on machines where it causes a GPU lockup */
-	if (dmi_check_system(intel_no_modeset_on_lid))
-		goto exit;
-	if (!acpi_lid_open()) {
-		/* do modeset on next lid open event */
-		dev_priv->modeset_restore = MODESET_ON_LID_OPEN;
-		goto exit;
-	}
-
-	if (dev_priv->modeset_restore == MODESET_DONE)
-		goto exit;
-
-	/*
-	 * Some old platform's BIOS love to wreak havoc while the lid is closed.
-	 * We try to detect this here and undo any damage. The split for PCH
-	 * platforms is rather conservative and a bit arbitrary expect that on
-	 * those platforms VGA disabling requires actual legacy VGA I/O access,
-	 * and as part of the cleanup in the hw state restore we also redisable
-	 * the vga plane.
-	 */
-	if (!HAS_PCH_SPLIT(dev_priv))
-		intel_display_resume(dev);
-
-	dev_priv->modeset_restore = MODESET_DONE;
-
-exit:
-	mutex_unlock(&dev_priv->modeset_restore_lock);
-	return NOTIFY_OK;
-}
-
 /**
  * intel_lvds_destroy - unregister and free LVDS structures
  * @connector: connector to free
@@ -575,9 +476,6 @@ static void intel_lvds_destroy(struct drm_connector *connector)
 {
 	struct intel_lvds_connector *lvds_connector =
 		to_lvds_connector(connector);
-
-	if (lvds_connector->lid_notifier.notifier_call)
-		acpi_lid_notifier_unregister(&lvds_connector->lid_notifier);
 
 	if (!IS_ERR_OR_NULL(lvds_connector->base.edid))
 		kfree(lvds_connector->base.edid);
@@ -817,6 +715,14 @@ static const struct dmi_system_id intel_no_lvds[] = {
 			DMI_EXACT_MATCH(DMI_BOARD_NAME, "D525MW"),
 		},
 	},
+	{
+		.callback = intel_no_lvds_dmi_callback,
+		.ident = "Radiant P845",
+		.matches = {
+			DMI_MATCH(DMI_SYS_VENDOR, "Radiant Systems Inc"),
+			DMI_MATCH(DMI_PRODUCT_NAME, "P845"),
+		},
+	},
 
 	{ }	/* terminating entry */
 };
@@ -880,8 +786,8 @@ static bool compute_is_dual_link_lvds(struct intel_lvds_encoder *lvds_encoder)
 	struct drm_i915_private *dev_priv = to_i915(dev);
 
 	/* use the module option value if specified */
-	if (i915.lvds_channel_mode > 0)
-		return i915.lvds_channel_mode == 2;
+	if (i915_modparams.lvds_channel_mode > 0)
+		return i915_modparams.lvds_channel_mode == 2;
 
 	/* single channel LVDS is limited to 112 MHz */
 	if (lvds_encoder->attached_connector->base.panel.fixed_mode->clock
@@ -1055,8 +961,6 @@ void intel_lvds_init(struct drm_i915_private *dev_priv)
 	 * 2) check for VBT data
 	 * 3) check to see if LVDS is already on
 	 *    if none of the above, no panel
-	 * 4) make sure lid is open
-	 *    if closed, act like it's not there for now
 	 */
 
 	/*
@@ -1147,12 +1051,6 @@ out:
 		      lvds_encoder->is_dual_link ? "dual" : "single");
 
 	lvds_encoder->a3_power = lvds & LVDS_A3_POWER_MASK;
-
-	lvds_connector->lid_notifier.notifier_call = intel_lid_notify;
-	if (acpi_lid_notifier_register(&lvds_connector->lid_notifier)) {
-		DRM_DEBUG_KMS("lid notifier registration failed\n");
-		lvds_connector->lid_notifier.notifier_call = NULL;
-	}
 
 	return;
 
