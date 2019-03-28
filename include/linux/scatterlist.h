@@ -21,6 +21,8 @@ struct scatterlist {
 #endif
 };
 
+#define SCATTERLIST_MAX_SEGMENT (UINT_MAX & PAGE_MASK)
+
 /*
  * These macros should be used after a dma_map_sg call has been done
  * to get bus addresses of each of the SG entries and their lengths.

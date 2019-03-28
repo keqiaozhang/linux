@@ -369,6 +369,61 @@ int sg_alloc_table(struct sg_table *table, unsigned int nents, gfp_t gfp_mask)
 }
 EXPORT_SYMBOL(sg_alloc_table);
 
+int __sg_alloc_table_from_pages(struct sg_table *sgt, struct page **pages,
+				unsigned int n_pages, unsigned int offset,
+				unsigned long size, unsigned int max_segment,
+				gfp_t gfp_mask)
+{
+	unsigned int chunks, cur_page, seg_len, i;
+	int ret;
+	struct scatterlist *s;
+
+	if (WARN_ON(!max_segment || offset_in_page(max_segment)))
+		return -EINVAL;
+
+	/* compute number of contiguous chunks */
+	chunks = 1;
+	seg_len = 0;
+	for (i = 1; i < n_pages; i++) {
+		seg_len += PAGE_SIZE;
+		if (seg_len >= max_segment ||
+		    page_to_pfn(pages[i]) != page_to_pfn(pages[i - 1]) + 1) {
+			chunks++;
+			seg_len = 0;
+		}
+	}
+
+	ret = sg_alloc_table(sgt, chunks, gfp_mask);
+	if (unlikely(ret))
+		return ret;
+
+	/* merging chunks and putting them into the scatterlist */
+	cur_page = 0;
+	for_each_sg(sgt->sgl, s, sgt->orig_nents, i) {
+		unsigned int j, chunk_size;
+
+		/* look for the end of the current chunk */
+		seg_len = 0;
+		for (j = cur_page + 1; j < n_pages; j++) {
+			seg_len += PAGE_SIZE;
+			if (seg_len >= max_segment ||
+			    page_to_pfn(pages[j]) !=
+			    page_to_pfn(pages[j - 1]) + 1)
+				break;
+		}
+
+		chunk_size = ((j - cur_page) << PAGE_SHIFT) - offset;
+		sg_set_page(s, pages[cur_page],
+			    min_t(unsigned long, size, chunk_size), offset);
+		size -= chunk_size;
+		offset = 0;
+		cur_page = j;
+	}
+
+	return 0;
+}
+EXPORT_SYMBOL(__sg_alloc_table_from_pages);
+
 /**
  * sg_alloc_table_from_pages - Allocate and initialize an sg table from
  *			       an array of pages

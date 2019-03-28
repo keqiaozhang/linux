@@ -401,6 +401,11 @@ struct get_pages_work {
 	struct task_struct *task;
 };
 
+int __sg_alloc_table_from_pages(struct sg_table *sgt, struct page **pages,                                                 
+                                unsigned int n_pages, unsigned int offset,                                                 
+                                unsigned long size, unsigned int max_segment,                                              
+                                gfp_t gfp_mask);                               
+
 static struct sg_table *
 __i915_gem_userptr_alloc_pages(struct drm_i915_gem_object *obj,
 			       struct page **pvec, int num_pages)

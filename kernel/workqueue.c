@@ -4183,6 +4183,14 @@ void workqueue_set_max_active(struct workqueue_struct *wq, int max_active)
 }
 EXPORT_SYMBOL_GPL(workqueue_set_max_active);
 
+struct work_struct *current_work(void)
+{
+	struct worker *worker = current_wq_worker();
+
+	return worker ? worker->current_work : NULL;
+}
+EXPORT_SYMBOL(current_work);
+
 /**
  * current_is_workqueue_rescuer - is %current workqueue rescuer?
  *

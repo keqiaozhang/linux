@@ -42,6 +42,7 @@
 
 #include "drm_crtc_helper_internal.h"
 
+struct work_struct *current_work(void);
 /**
  * DOC: output probing helper overview
  *
