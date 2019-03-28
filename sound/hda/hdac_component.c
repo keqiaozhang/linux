@@ -74,13 +74,16 @@ void snd_hdac_display_power(struct hdac_bus *bus, unsigned int idx, bool enable)
 	else
 		clear_bit(idx, &bus->display_power_status);
 
+	dev_err(bus->dev, "in %s %d ylb\n", __func__, __LINE__);
 	if (!acomp || !acomp->ops)
 		return;
 
 	if (bus->display_power_status) {
 		if (!bus->display_power_active) {
-			if (acomp->ops->get_power)
+			if (acomp->ops->get_power) {
+				dev_err(bus->dev, "in %s %d ylb\n", __func__, __LINE__);
 				acomp->ops->get_power(acomp->dev);
+			}
 			snd_hdac_set_codec_wakeup(bus, true);
 			snd_hdac_set_codec_wakeup(bus, false);
 			bus->display_power_active = true;

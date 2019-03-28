@@ -1409,6 +1409,7 @@ static int hdac_hdmi_create_dais(struct hdac_device *hdev,
 	u64 formats;
 	int ret;
 
+	dev_err(&hdev->dev, "in %s %d ylb, dai_name: %s\n", __func__, __LINE__, dai_name);
 	hdmi_dais = devm_kzalloc(&hdev->dev,
 			(sizeof(*hdmi_dais) * num_dais),
 			GFP_KERNEL);
@@ -1428,6 +1429,7 @@ static int hdac_hdmi_create_dais(struct hdac_device *hdev,
 			return -EINVAL;
 
 		sprintf(dai_name, "intel-hdmi-hifi%d", i+1);
+		dev_err(&hdev->dev, "in %s %d ylb, dai_name: %s\n", __func__, __LINE__, dai_name);
 		hdmi_dais[i].name = devm_kstrdup(&hdev->dev,
 					dai_name, GFP_KERNEL);
 
@@ -1476,6 +1478,7 @@ static int hdac_hdmi_parse_and_map_nid(struct hdac_device *hdev,
 	hdac_hdmi_skl_enable_all_pins(hdev);
 	hdac_hdmi_skl_enable_dp12(hdev);
 
+	dev_err(&hdev->dev, "in %s %d ylb\n", __func__, __LINE__);
 	num_nodes = snd_hdac_get_sub_nodes(hdev, hdev->afg, &nid);
 	if (!nid || num_nodes <= 0) {
 		dev_warn(&hdev->dev, "HDMI: failed to get afg sub nodes\n");
@@ -1513,7 +1516,8 @@ static int hdac_hdmi_parse_and_map_nid(struct hdac_device *hdev,
 		dev_err(&hdev->dev, "Bad pin/cvt setup in %s\n", __func__);
 		return ret;
 	}
-
+	
+	dev_err(&hdev->dev, "in %s %d ylb\n", __func__, __LINE__);
 	ret = hdac_hdmi_create_dais(hdev, dais, hdmi, hdmi->num_cvt);
 	if (ret) {
 		dev_err(&hdev->dev, "Failed to create dais with err: %d\n",
@@ -1825,6 +1829,7 @@ static int hdmi_codec_probe(struct snd_soc_component *component)
 	struct hdac_ext_link *hlink = NULL;
 	int ret;
 
+	dev_err(&hdev->dev, "in %s %d ylb\n", __func__, __LINE__);
 	hdmi->component = component;
 
 	/*
@@ -1997,6 +2002,7 @@ static int hdac_hdmi_dev_probe(struct hdac_device *hdev)
 	struct hdac_driver *hdrv = drv_to_hdac_driver(hdev->dev.driver);
 	const struct hda_device_id *hdac_id = hdac_get_device_id(hdev, hdrv);
 
+	dev_err(&hdev->dev, "in %s %d ylb\n", __func__, __LINE__);
 	/* hold the ref while we probe */
 	hlink = snd_hdac_ext_bus_get_link(hdev->bus, dev_name(&hdev->dev));
 	if (!hlink) {
@@ -2167,6 +2173,7 @@ static struct hdac_driver hdmi_driver = {
 
 static int __init hdmi_init(void)
 {
+	dev_err(NULL, "in %s %d ylb\n", __func__, __LINE__);
 	return snd_hda_ext_driver_register(&hdmi_driver);
 }
 

@@ -151,13 +151,104 @@ int hda_dsp_ctrl_clock_power_gating(struct snd_sof_dev *sdev, bool enable)
  * issues, so recommendation is to set CGCTL.MISCBDCGE to 0 then do reset
  * (init chip) and then again set CGCTL.MISCBDCGE to 1
  */
+static int show_stream = 7;
+static void dump_hda_registers(struct snd_sof_dev *sdev)
+{
+        int i, end;
+       u32 val, gcap;
+       int bar = HDA_DSP_HDA_BAR;
+       int stream, hl_idx;
+       int num_playback, num_capture, num_total;
+       struct hdac_bus *bus = sof_to_bus(sdev);
+
+       stream = show_stream;
+       hl_idx = 0; //on apl it is 0
+
+       val = snd_hdac_chip_readl(bus, GCAP);
+       dev_err(sdev->dev, "ylb, 0x%4x: 0x%8x\n", 0x0, val);
+       val = snd_hdac_chip_readl(bus, GCTL);
+       dev_err(sdev->dev, "ylb, 0x%4x: 0x%8x\n", 0x08, val);
+       val = snd_hdac_chip_readl(bus, WAKEEN);
+       dev_err(sdev->dev, "ylb, 0x%4x: 0x%8x\n", 0x0c, val);
+       /* dump Global Registers */
+       for (i = 0; i < 0x20; i=i+4) {
+	 val = snd_sof_dsp_read(sdev, bar, i);
+	 dev_err(sdev->dev, "ylb, 0x%4x: 0x%8x\n", i, val);
+       }
+
+       /* dump Interrupt Registers */
+       for (i = 0x20; i < 0x30; i=i+4) {
+               val = snd_sof_dsp_read(sdev, bar, i);
+	       dev_err(sdev->dev, "ylb, 0x%4x: 0x%8x\n", i, val);
+       }
+
+       /* dump Controller Registers */
+       i = 0x38;
+       val = snd_sof_dsp_read(sdev, bar, i);
+       dev_err(sdev->dev, "ylb, 0x%4x: 0x%8x\n", i, val);
+       for (i = 0x40; i < 0x78; i=i+4) {
+               val = snd_sof_dsp_read(sdev, bar, i);
+	       dev_err(sdev->dev, "ylb, 0x%4x: 0x%8x\n", i, val);
+       }
+
+       /* dump sdx Registers */
+       i = 0x80 + 0x20 * stream;
+       end = i + 0x20;
+       for (; i < end; i=i+4) {
+               val = snd_sof_dsp_read(sdev, bar, i);
+	       dev_err(sdev->dev, "ylb, 0x%4x: 0x%8x\n", i, val);
+       }
+
+       /* dump PP (Processing Pipe) Capability */
+       i = 0x804;
+       val = snd_sof_dsp_read(sdev, bar, i);
+       dev_err(sdev->dev, "ylb, 0x%4x: 0x%8x\n", i, val);
+
+       i = 0x808;
+       val = snd_sof_dsp_read(sdev, bar, i);
+       dev_err(sdev->dev, "ylb, 0x%4x: 0x%8x\n", i, val);
+
+       gcap = snd_sof_dsp_read(sdev, HDA_DSP_HDA_BAR, SOF_HDA_GCAP);
+       num_capture = (gcap >> 8) & 0x0f;
+       num_playback = (gcap >> 12) & 0x0f;
+       num_total = num_playback + num_capture;
+       i = 0x810 + 0x10 * stream;
+       end = i + 0x10;
+       for (; i < end; i=i+4) {
+               val = snd_sof_dsp_read(sdev, bar, i);
+	       dev_err(sdev->dev, "ylb, 0x%4x: 0x%8x\n", i, val);
+       }
+       i = 0x810 + 0x10 * num_total + 0x10 * stream;
+       end = i + 0x10;
+       for (; i < end; i=i+4) {
+               val = snd_sof_dsp_read(sdev, bar, i);
+	       dev_err(sdev->dev, "ylb, 0x%4x: 0x%8x\n", i, val);
+       }
+
+       /* dump ML Registers */
+       i = 0xc40 + 0x40*hl_idx;
+       end = i + 0x1c;
+       for (; i < end; i=i+4) {
+               val = snd_sof_dsp_read(sdev, bar, i);
+	       dev_err(sdev->dev, "ylb, 0x%4x: 0x%8x\n", i, val);
+       }
+
+       /* dump Vendor Specific Registers */
+       i = 0x104a;
+       val = snd_sof_dsp_read(sdev, bar, i);
+       dev_err(sdev->dev, "ylb, 0x%4x: 0x%8x\n", i, val);
+}
 int hda_dsp_ctrl_init_chip(struct snd_sof_dev *sdev, bool full_reset)
 {
 	struct hdac_bus *bus = sof_to_bus(sdev);
 	int ret;
 
 	hda_dsp_ctrl_misc_clock_gating(sdev, false);
+
+	dev_err(sdev->dev, "in %s %d ylb\n", __func__, __LINE__);
+	dump_hda_registers(sdev);
 	ret = snd_hdac_bus_init_chip(bus, full_reset);
+	dump_hda_registers(sdev);
 	hda_dsp_ctrl_misc_clock_gating(sdev, true);
 
 	return ret;

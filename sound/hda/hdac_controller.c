@@ -390,9 +390,13 @@ int snd_hdac_bus_reset_link(struct hdac_bus *bus, bool full_reset)
 	if (!full_reset)
 		goto skip_reset;
 
+	bus->codec_mask = snd_hdac_chip_readw(bus, STATESTS);
+	dev_err(bus->dev, "in %s %d ylb, codec_mask: %#lx\n", __func__, __LINE__, bus->codec_mask);
 	/* clear STATESTS */
 	snd_hdac_chip_writew(bus, STATESTS, STATESTS_INT_MASK);
 
+	bus->codec_mask = snd_hdac_chip_readw(bus, STATESTS);
+	dev_err(bus->dev, "in %s %d ylb, codec_mask: %#lx\n", __func__, __LINE__, bus->codec_mask);
 	/* reset controller */
 	snd_hdac_bus_enter_link_reset(bus);
 
@@ -403,6 +407,9 @@ int snd_hdac_bus_reset_link(struct hdac_bus *bus, bool full_reset)
 
 	/* Bring controller out of reset */
 	snd_hdac_bus_exit_link_reset(bus);
+
+	bus->codec_mask = snd_hdac_chip_readw(bus, STATESTS);
+	dev_err(bus->dev, "in %s %d ylb, codec_mask: %#lx\n", __func__, __LINE__, bus->codec_mask);
 
 	/* Brent Chartrand said to wait >= 540us for codecs to initialize */
 	usleep_range(1000, 1200);
@@ -420,7 +427,9 @@ int snd_hdac_bus_reset_link(struct hdac_bus *bus, bool full_reset)
 	/* detect codecs */
 	if (!bus->codec_mask) {
 		bus->codec_mask = snd_hdac_chip_readw(bus, STATESTS);
+dev_err(bus->dev, "in %s %d ylb, codec_mask: %#lx\n", __func__, __LINE__, bus->codec_mask);
 		dev_dbg(bus->dev, "codec_mask = 0x%lx\n", bus->codec_mask);
+		
 	}
 
 	return 0;
@@ -480,6 +489,7 @@ bool snd_hdac_bus_init_chip(struct hdac_bus *bus, bool full_reset)
 		return false;
 
 	/* reset controller */
+dev_err(bus->dev, "in %s %d ylb\n", __func__, __LINE__);
 	snd_hdac_bus_reset_link(bus, full_reset);
 
 	/* clear interrupts */

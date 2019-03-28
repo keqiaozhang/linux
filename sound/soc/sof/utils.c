@@ -23,25 +23,39 @@
 
 void sof_io_write(struct snd_sof_dev *sdev, void __iomem *addr, u32 value)
 {
+  //dev_err(sdev->dev, "in %s %d ylb_reg, addr: %lx, value: %d\n",
+  //             __func__, __LINE__, (unsigned long)addr, value);
 	writel(value, addr);
 }
 EXPORT_SYMBOL(sof_io_write);
 
 u32 sof_io_read(struct snd_sof_dev *sdev, void __iomem *addr)
 {
-	return readl(addr);
+       u32 ret;
+
+       ret = readl(addr);
+       // dev_err(sdev->dev, "in %s %d ylb_reg, addr: %lx, ret: %d\n",
+       //        __func__, __LINE__, (unsigned long)addr, ret);
+       return ret;
 }
 EXPORT_SYMBOL(sof_io_read);
 
 void sof_io_write64(struct snd_sof_dev *sdev, void __iomem *addr, u64 value)
 {
+  //  dev_err(sdev->dev, "in %s %d ylb_reg, addr: %lx, value: %llud\n",
+  //           __func__, __LINE__, (unsigned long)addr, value);
 	writeq(value, addr);
 }
 EXPORT_SYMBOL(sof_io_write64);
 
 u64 sof_io_read64(struct snd_sof_dev *sdev, void __iomem *addr)
 {
-	return readq(addr);
+       u32 ret;
+
+       ret = readq(addr);
+       //dev_err(sdev->dev, "in %s %d ylb_reg, addr: %lx, ret: %d\n",
+       //        __func__, __LINE__, (unsigned long)addr, ret);
+       return ret;
 }
 EXPORT_SYMBOL(sof_io_read64);
 

@@ -106,6 +106,8 @@ int hda_codec_probe_bus(struct snd_sof_dev *sdev)
 			continue;
 
 		ret = hda_codec_probe(sdev, i);
+
+dev_err(sdev->dev, "in %s %d ylb, i: %d\n", __func__, __LINE__, i);
 		if (ret < 0) {
 			dev_err(bus->dev, "error: codec #%d probe error, ret: %d\n",
 				i, ret);

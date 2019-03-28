@@ -259,6 +259,7 @@ static int hda_init_caps(struct snd_sof_dev *sdev)
 	int ret = 0;
 	int i;
 
+dev_err(sdev->dev, "in %s %d ylb\n", __func__, __LINE__);
 	device_disable_async_suspend(bus->dev);
 
 	/* check if dsp is there */
@@ -394,7 +395,7 @@ int hda_dsp_probe(struct snd_sof_dev *sdev)
 	struct hdac_stream *stream;
 	const struct sof_intel_dsp_desc *chip;
 	int sd_offset, ret = 0;
-
+dev_err(sdev->dev, "in %s %d ylb\n", __func__, __LINE__);
 	/*
 	 * detect DSP by checking class/subclass/prog-id information
 	 * class=04 subclass 03 prog-if 00: no DSP, legacy driver is required
@@ -536,6 +537,8 @@ int hda_dsp_probe(struct snd_sof_dev *sdev)
 	snd_sof_pci_update_bits(sdev, PCI_TCSEL, 0x07, 0);
 
 	/* init HDA capabilities */
+
+dev_err(sdev->dev, "in %s %d ylb\n", __func__, __LINE__);
 	ret = hda_init_caps(sdev);
 	if (ret < 0)
 		goto free_ipc_irq;
