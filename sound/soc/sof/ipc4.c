@@ -718,10 +718,13 @@ static int sof_ipc4_set_core_state(struct snd_sof_dev *sdev, int core_idx, bool 
 	struct sof_ipc4_msg msg;
 
 	dx_state.core_mask = BIT(core_idx);
-	if (on)
+	if (on) {
 		dx_state.dx_mask = BIT(core_idx);
-	else
+	} else {
 		dx_state.dx_mask = 0;
+		/* HACK: wait 10ms before sending core off message */
+		msleep(10);
+	}
 
 	msg.primary = SOF_IPC4_MSG_TYPE_SET(SOF_IPC4_MOD_SET_DX);
 	msg.primary |= SOF_IPC4_MSG_DIR(SOF_IPC4_MSG_REQUEST);
